@@ -59,4 +59,12 @@ exit($ok ? 0 : 1);
 
 php bin/console doctrine:migrations:migrate --no-interaction || true
 
+# Rebuild du container DI (évite 500 si le constructeur d’un service a changé)
+if [ "${APP_ENV:-dev}" = "prod" ]; then
+  rm -rf var/cache/prod/*
+  php bin/console cache:warmup --env=prod --no-interaction || true
+  chown -R www-data:www-data var 2>/dev/null || true
+  chmod -R 777 var || true
+fi
+
 exec docker-php-entrypoint "$@"
