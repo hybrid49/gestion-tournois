@@ -267,6 +267,7 @@ docker compose run --rm frontend sh -c "npm install && npm run build"
 | API 500 au démarrage | `docker compose logs -f php` (DB / migrations) |
 | CORS bloqué | Ajuster `CORS_ALLOW_ORIGIN` au domaine HTTPS |
 | Login refusé | Vérifier `ADMIN_*` et `APP_SECRET` du service `php` |
+| Erreur `Unable to read .../.env` | Le fichier `backend/.env` doit exister (fourni dans le repo). Sur un vieux clone : `git pull` puis `docker compose restart php` |
 | Certificat Caddy | DNS propagé ? ports 80/443 ouverts ? |
 
 Logs :

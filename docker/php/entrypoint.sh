@@ -3,6 +3,18 @@ set -e
 
 cd /var/www/backend
 
+# Symfony exige un fichier .env (même si Docker injecte déjà les variables)
+if [ ! -f .env ]; then
+  cat > .env <<'EOF'
+APP_ENV=dev
+APP_SECRET=change_me_in_production_please_32chars
+DATABASE_URL="postgresql://tournois:tournois@postgres:5432/tournois?serverVersion=16&charset=utf8"
+ADMIN_USER=admin
+ADMIN_PASSWORD=admin
+CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+EOF
+fi
+
 if [ ! -d vendor ]; then
   composer install --no-interaction --prefer-dist
 fi

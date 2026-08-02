@@ -1,14 +1,16 @@
 backend/vendor/
 backend/var/
-backend/.env
-backend/.env.dev
+# .env de base est versionné (valeurs par défaut). Secrets → .env.local
 backend/.env.local
 backend/.env.*.local
+backend/.env.dev
 frontend/node_modules/
 frontend/dist/
-.env
-.env.local
+# Uniquement à la racine du monorepo (pas backend/.env qui est versionné)
+/.env
+/.env.local
 .idea/
 .vscode/
 *.log
 .DS_Store
+
