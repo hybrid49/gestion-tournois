@@ -58,7 +58,18 @@ class PlayerController extends AbstractController
         return $this->json($player->toArray(), Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', methods: ['GET'])]
+    #[Route('/reset-history', methods: ['POST'])]
+    public function resetHistory(): JsonResponse
+    {
+        $result = $this->statsService->clearAllHistory();
+
+        return $this->json([
+            'ok' => true,
+            ...$result,
+        ]);
+    }
+
+    #[Route('/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(int $id): JsonResponse
     {
         $player = $this->players->find($id);
@@ -69,7 +80,7 @@ class PlayerController extends AbstractController
         return $this->json($player->toArray());
     }
 
-    #[Route('/{id}/stats', methods: ['GET'])]
+    #[Route('/{id}/stats', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function stats(int $id): JsonResponse
     {
         $player = $this->players->find($id);
@@ -80,7 +91,7 @@ class PlayerController extends AbstractController
         return $this->json($this->statsService->playerStats($player));
     }
 
-    #[Route('/{id}', methods: ['DELETE'])]
+    #[Route('/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function delete(int $id): JsonResponse
     {
         $player = $this->players->find($id);

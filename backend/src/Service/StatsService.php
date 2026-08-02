@@ -6,6 +6,8 @@ use App\Entity\GameMatch;
 use App\Entity\Player;
 use App\Entity\Team;
 use App\Repository\GameMatchRepository;
+use App\Repository\PlayerRepository;
+use App\Repository\TournamentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class StatsService
@@ -13,7 +15,38 @@ class StatsService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly GameMatchRepository $matchRepository,
+        private readonly PlayerRepository $playerRepository,
+        private readonly TournamentRepository $tournamentRepository,
     ) {
+    }
+
+    /**
+     * Remet les compteurs joueurs à zéro et supprime tous les tournois
+     * (l’historique détaillé est dérivé des matchs).
+     *
+     * @return array{playersReset: int, tournamentsDeleted: int}
+     */
+    public function clearAllHistory(): array
+    {
+        $tournaments = $this->tournamentRepository->findAll();
+        $tournamentsDeleted = count($tournaments);
+        foreach ($tournaments as $tournament) {
+            $this->em->remove($tournament);
+        }
+
+        $players = $this->playerRepository->findAll();
+        foreach ($players as $player) {
+            $player->setWins(0);
+            $player->setLosses(0);
+            $player->setTournamentsPlayed(0);
+        }
+
+        $this->em->flush();
+
+        return [
+            'playersReset' => count($players),
+            'tournamentsDeleted' => $tournamentsDeleted,
+        ];
     }
 
     public function applyMatchResult(GameMatch $match): void

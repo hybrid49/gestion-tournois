@@ -76,6 +76,8 @@ export const api = {
   createPlayer: (name) =>
     request('/api/players', { method: 'POST', body: JSON.stringify({ name }) }),
   playerStats: (id) => request(`/api/players/${id}/stats`),
+  resetPlayersHistory: () =>
+    request('/api/players/reset-history', { method: 'POST' }),
   publicDisplay: (id) => request(`/api/public/tournaments/${id}/display`),
   publicTournaments: () => request('/api/public/tournaments'),
 }
