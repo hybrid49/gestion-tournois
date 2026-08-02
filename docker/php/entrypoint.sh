@@ -59,12 +59,14 @@ exit($ok ? 0 : 1);
 
 php bin/console doctrine:migrations:migrate --no-interaction || true
 
-# Rebuild du container DI (évite 500 si le constructeur d’un service a changé)
+# Warmup prod seulement si le container DI n’existe pas encore
+# (évite ~10–30s de 502 à chaque simple restart / changement de mdp)
 if [ "${APP_ENV:-dev}" = "prod" ]; then
-  rm -rf var/cache/prod/*
-  php bin/console cache:warmup --env=prod --no-interaction || true
-  chown -R www-data:www-data var 2>/dev/null || true
-  chmod -R 777 var || true
+  if ! ls var/cache/prod/Container*.php >/dev/null 2>&1; then
+    php bin/console cache:warmup --env=prod --no-interaction || true
+    chown -R www-data:www-data var 2>/dev/null || true
+    chmod -R 777 var || true
+  fi
 fi
 
 exec docker-php-entrypoint "$@"
