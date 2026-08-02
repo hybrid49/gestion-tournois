@@ -64,14 +64,24 @@ defineProps({
 
 .hero {
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   gap: 0.85rem;
+  width: 100%;
 }
 
 .hero .mark {
+  display: block;
   width: min(168px, 48vw);
   height: auto;
+  margin: 0 auto;
   filter: drop-shadow(0 10px 28px rgba(245, 213, 143, 0.18));
+}
+
+.hero .copy {
+  justify-items: center;
+  width: 100%;
 }
 
 .hero .name {

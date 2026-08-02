@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { api } from '../api/client'
 import MatchList from '../components/MatchList.vue'
@@ -21,6 +21,7 @@ const player2Id = ref(null)
 const duoNames = ref('')
 const scoreDraft = ref({})
 const activeTab = ref('inscriptions')
+let pollTimer = null
 
 const groupMatches = computed(() =>
   (tournament.value?.matches || []).filter((m) => m.phase === 'group'),
@@ -269,12 +270,30 @@ async function setAsCurrent(matchId) {
   )
 }
 
+function startPolling() {
+  stopPolling()
+  pollTimer = setInterval(() => {
+    if (document.visibilityState === 'visible') load()
+  }, 3000)
+}
+
+function stopPolling() {
+  if (pollTimer) {
+    clearInterval(pollTimer)
+    pollTimer = null
+  }
+}
+
 watch(id, () => {
   tournament.value = null
   activeTab.value = 'inscriptions'
   load()
 })
-onMounted(load)
+onMounted(() => {
+  load()
+  startPolling()
+})
+onUnmounted(stopPolling)
 </script>
 
 <template>
