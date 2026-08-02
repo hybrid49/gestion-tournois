@@ -102,6 +102,7 @@ cd /opt/gestion-tournois
 |----------|---------|
 | `ADMIN_USER` / `ADMIN_PASSWORD` | **Changer** (compte admin unique) |
 | `APP_SECRET` | Chaîne longue aléatoire (≥ 32 caractères) |
+| `DEFAULT_URI` | URL publique de l’app (ex. `https://tournois.charrierpaul.fr`) |
 | `POSTGRES_PASSWORD` | Mot de passe fort (aligné dans `DATABASE_URL`) |
 | `CORS_ALLOW_ORIGIN` | Autoriser votre domaine (voir ci-dessous) |
 | `APP_ENV` | Mettre `prod` en production |

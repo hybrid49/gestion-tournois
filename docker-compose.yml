@@ -22,6 +22,7 @@ services:
     environment:
       APP_ENV: dev
       APP_SECRET: change_me_in_production_please_32chars
+      DEFAULT_URI: http://localhost:8080
       DATABASE_URL: postgresql://tournois:tournois@postgres:5432/tournois?serverVersion=16&charset=utf8
       ADMIN_USER: admin
       ADMIN_PASSWORD: admin

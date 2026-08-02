@@ -8,6 +8,7 @@ if [ ! -f .env ]; then
   cat > .env <<'EOF'
 APP_ENV=dev
 APP_SECRET=change_me_in_production_please_32chars
+DEFAULT_URI=http://localhost:8080
 DATABASE_URL="postgresql://tournois:tournois@postgres:5432/tournois?serverVersion=16&charset=utf8"
 ADMIN_USER=admin
 ADMIN_PASSWORD=admin
@@ -15,11 +16,20 @@ CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
 EOF
 fi
 
+# DEFAULT_URI requis par Symfony router (évite 500 si .env incomplet)
+if ! grep -q '^DEFAULT_URI=' .env 2>/dev/null; then
+  echo 'DEFAULT_URI=http://localhost:8080' >> .env
+fi
+
 if [ ! -d vendor ]; then
   composer install --no-interaction --prefer-dist
 fi
 
 mkdir -p var/cache var/log
+# php-fpm tourne en www-data : le cache prod doit être writable
+chown -R www-data:www-data var 2>/dev/null || true
+chmod -R ug+rwX var || true
+# fallback si chown impossible (volume root)
 chmod -R 777 var || true
 
 # Wait for DB then migrate
